@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API = axios.create({ baseURL: import.meta.env.VITE_API_URL || '/api', timeout: 20000 });
+const API = axios.create({ baseURL: import.meta.env.VITE_API_URL, timeout: 20000 });
+console.log(import.meta.env.VITE_API_URL);
 
 API.interceptors.request.use(cfg => {
   const t = localStorage.getItem('ck_token');
