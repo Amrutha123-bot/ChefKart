@@ -30,7 +30,7 @@ coverage/
 *.temp
 
 # Uploads (NOW IGNORE because using Cloudinary)
-uploads/
+
 
 # Editor files
 .vscode/
