@@ -173,7 +173,8 @@ export default function Home() {
             <div className="dish-scroll">
               {trendingDishes.map((d, i) => {
                 const imgUrl = getImageUrl(d.image);
-
+                console.log("Dish:", d);
+                console.log("Image:", d.image);
                 return (
                   <div key={i} className="dish-card">
                     <div className="dish-img">
