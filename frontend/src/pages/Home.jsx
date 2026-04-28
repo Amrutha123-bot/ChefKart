@@ -31,7 +31,7 @@ export default function Home() {
   const [trendingDishes, setTrendingDishes] = useState([]);
   const nav = useNavigate();
 
-
+console.log("Home page")
   useEffect(() => {
     // Fetch real dishes from your chefs in the database
     chefAPI.getAll({ limit: 6 }).then(r => {
