@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { chefAPI } from '../services/api';
 import Footer from '../components/Footer';
+import { getImageUrl } from '../utils/getImageUrl';
 
 const BG_COLORS = ['#E8F5E9', '#FFF3E0', '#FCE4EC', '#E3F2FD', '#F3E5F5', '#FFF8E1'];
 // Base URL to load images from backend static folder
@@ -30,6 +31,7 @@ export default function Home() {
   const [trendingDishes, setTrendingDishes] = useState([]);
   const nav = useNavigate();
 
+
   useEffect(() => {
     // Fetch real dishes from your chefs in the database
     chefAPI.getAll({ limit: 6 }).then(r => {
@@ -44,7 +46,7 @@ export default function Home() {
           }
         });
       });
-      setTrendingDishes(dishes);
+      setTrendingDishes(dishes.slice(0, 6));
     }).catch(() => { });
   }, []);
 
@@ -169,29 +171,30 @@ export default function Home() {
           </div>
           {trendingDishes.length > 0 ? (
             <div className="dish-scroll">
-              {trendingDishes.map((d, i) => (
-                <div key={i} className="dish-card" onClick={() => nav('/chefs')}>
-                  <div className="dish-img" style={{ background: BG_COLORS[i], position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    {/* Emoji always underneath as fallback */}
-                    <span style={{ fontSize: '3rem', position: 'absolute', zIndex: 0 }}>🍽️</span>
-                    {/* Real Cloudinary image on top */}
-                    <img
-                      src={d.image}
-                      alt={d.name}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0, zIndex: 1 }}
-                      onError={e => { e.target.style.display = 'none'; }}
-                    />
-                    <div className="dish-overlay" style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 2 }}>
-                      by {d.chefName}
+              {trendingDishes.map((d, i) => {
+                const imgUrl = getImageUrl(d.image);
+
+                return (
+                  <div key={i} className="dish-card">
+                    <div className="dish-img">
+                      <img
+                        src={imgUrl}
+                        alt={d.name}
+                        style={{ width: '100%', height: '200px', objectFit: 'cover' }}
+                        onError={(e) => {
+                          e.target.src = "https://via.placeholder.com/300";
+                        }}
+                      />
+                    </div>
+
+                    <div className="dish-info">
+                      <div>{d.name}</div>
+                      <div>₹{d.price}</div>
+                      <div>{d.chefName}</div>
                     </div>
                   </div>
-                  <div className="dish-info">
-                    <div className="dish-name">{d.name}</div>
-                    <div className="dish-price">₹{d.price}</div>
-                    <div className="dish-avail">{d.chefName}</div>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ) : (
             // Fallback when no dishes have images yet
