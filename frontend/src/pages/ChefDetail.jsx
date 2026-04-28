@@ -27,11 +27,13 @@ const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').r
  * In local development:  dish.image = "dish_1712345_938201.jpg"
  *   → build full URL: http://localhost:5000/uploads/dishes/dish_xxx.jpg
  */
+// This handles Cloudinary URLs (https://...) and local filenames
 const getDishImageUrl = (image) => {
   if (!image) return null;
-  // Full URL already (Cloudinary https:// or local http://) — use directly
+  // Cloudinary or any full URL — use directly
   if (image.startsWith('http')) return image;
-  // Just a filename (seeded data or manually copied images) — build local URL
+  // Local filename fallback
+  const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
   return `${API_BASE}/uploads/dishes/${image}`;
 };
 

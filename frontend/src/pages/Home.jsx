@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { chefAPI } from '../services/api';
 import Footer from '../components/Footer';
 
-const BG_COLORS = ['#E8F5E9','#FFF3E0','#FCE4EC','#E3F2FD','#F3E5F5','#FFF8E1'];
+const BG_COLORS = ['#E8F5E9', '#FFF3E0', '#FCE4EC', '#E3F2FD', '#F3E5F5', '#FFF8E1'];
 // Base URL to load images from backend static folder
 // In production: images come from Cloudinary (full https:// URL stored in DB)
 // In development: images served from localhost:5000/uploads/dishes/
@@ -12,11 +12,11 @@ const IMG = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replac
 // Edit the "image" field to match your actual filename in backend/uploads/dishes/
 // If a file doesn't exist, the card shows a coloured emoji fallback automatically
 const DISHES = [
-  { name:'Butter Chicken',       image:'butter-chicken.jpg',      emoji:'🍛', price:'₹250–₹350', chefs:'12 Chefs Available' },
-  { name:'Hakka Noodles',        image:'hakka-noodles.jpg',       emoji:'🍜', price:'₹180–₹250', chefs:'18 Chefs Available' },
-  { name:'Chicken Biryani',      image:'chicken-biryani.jpg',     emoji:'🍚', price:'₹280–₹400', chefs:'15 Chefs Available' },
-  { name:'Masala Dosa',          image:'masala-dosa.jpg',         emoji:'🥞', price:'₹80–₹150',  chefs:'22 Chefs Available' },
-  { name:'Paneer Butter Masala', image:'paneer-butter-masala.jpg',emoji:'🧀', price:'₹200–₹320', chefs:'10 Chefs Available' },
+  { name: 'Butter Chicken', image: 'butter-chicken.jpg', emoji: '🍛', price: '₹250–₹350', chefs: '12 Chefs Available' },
+  { name: 'Hakka Noodles', image: 'hakka-noodles.jpg', emoji: '🍜', price: '₹180–₹250', chefs: '18 Chefs Available' },
+  { name: 'Chicken Biryani', image: 'chicken-biryani.jpg', emoji: '🍚', price: '₹280–₹400', chefs: '15 Chefs Available' },
+  { name: 'Masala Dosa', image: 'masala-dosa.jpg', emoji: '🥞', price: '₹80–₹150', chefs: '22 Chefs Available' },
+  { name: 'Paneer Butter Masala', image: 'paneer-butter-masala.jpg', emoji: '🧀', price: '₹200–₹320', chefs: '10 Chefs Available' },
 ];
 
 function Stars({ r, count }) {
@@ -27,10 +27,25 @@ export default function Home() {
   const [search, setSearch] = useState('');
   const [cuisine, setCuisine] = useState('');
   const [chefs, setChefs] = useState([]);
+  const [trendingDishes, setTrendingDishes] = useState([]);
   const nav = useNavigate();
 
   useEffect(() => {
-    chefAPI.getAll({ limit: 4 }).then(r => setChefs(r.data.chefs || [])).catch(() => {});
+    // Fetch real dishes from your chefs in the database
+    chefAPI.getAll({ limit: 6 }).then(r => {
+      const chefs = r.data.chefs || [];
+      setChefs(chefs);
+      // Collect all dishes from all chefs that have images
+      const dishes = [];
+      chefs.forEach(chef => {
+        (chef.dishes || []).forEach(d => {
+          if (d.image && dishes.length < 5) {
+            dishes.push({ ...d, chefName: chef.userId?.name });
+          }
+        });
+      });
+      setTrendingDishes(dishes);
+    }).catch(() => { });
   }, []);
 
   const handleSearch = e => {
@@ -48,7 +63,7 @@ export default function Home() {
           <div className="hero-inner">
             <div>
               <div className="hero-tag">🏆 India's #1 Home Chef Platform</div>
-              <h1>Bringing<br/><span className="accent">Restaurant-Quality</span><br/>Food to Your Home</h1>
+              <h1>Bringing<br /><span className="accent">Restaurant-Quality</span><br />Food to Your Home</h1>
               <p>Discover <strong style={{ color: '#A5D6A7' }}>verified</strong> home chefs near you. Choose your cuisine, book instantly, and enjoy authentic meals cooked fresh in your kitchen.</p>
               <div className="hero-cta">
                 <button className="btn btn-orange btn-xl" onClick={() => nav('/chefs')}>🍽️ Explore Chefs</button>
@@ -69,7 +84,7 @@ export default function Home() {
                 <input placeholder="Biryani, Pasta, Chef name..." value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSearch(e)} />
               </div>
               <div className="chip-row">
-                {['All','North Indian','South Indian','Chinese','Continental'].map(c => (
+                {['All', 'North Indian', 'South Indian', 'Chinese', 'Continental'].map(c => (
                   <button key={c} className={`chip ${cuisine === (c === 'All' ? '' : c) ? 'active' : ''}`} onClick={() => setCuisine(c === 'All' ? '' : c)}>{c}</button>
                 ))}
               </div>
@@ -79,11 +94,11 @@ export default function Home() {
                   return (
                     <div key={ch._id} className="mini-item" onClick={() => nav(`/chefs/${ch._id}`)}>
                       <div className="mi-av" style={{ background: BG_COLORS[i], color: 'var(--green)' }}>
-                        {u?.name?.split(' ').map(n => n[0]).join('').slice(0,2)}
+                        {u?.name?.split(' ').map(n => n[0]).join('').slice(0, 2)}
                       </div>
                       <div style={{ flex: 1 }}>
                         <div className="mi-name">{u?.name}</div>
-                        <div className="mi-sub">{ch.cuisines?.slice(0,2).join(' · ')} · {ch.location}</div>
+                        <div className="mi-sub">{ch.cuisines?.slice(0, 2).join(' · ')} · {ch.location}</div>
                       </div>
                       <div>
                         <div className="mi-price">₹{ch.pricing?.hourly}/hr</div>
@@ -125,7 +140,7 @@ export default function Home() {
                 <div><div className="sb-label">Cuisine</div>
                   <select className="sb-select" value={cuisine} onChange={e => setCuisine(e.target.value)}>
                     <option value="">All Cuisines</option>
-                    {['North Indian','South Indian','Continental','Chinese','Mughlai','Thai','Gujarati','Punjabi','Kerala'].map(c => <option key={c}>{c}</option>)}
+                    {['North Indian', 'South Indian', 'Continental', 'Chinese', 'Mughlai', 'Thai', 'Gujarati', 'Punjabi', 'Kerala'].map(c => <option key={c}>{c}</option>)}
                   </select>
                 </div>
               </div>
@@ -152,29 +167,42 @@ export default function Home() {
             <div><h2 style={{ fontSize: '1.6rem' }}>🔥 Trending Dishes</h2><p style={{ fontSize: '.85rem' }}>Explore what everyone is craving</p></div>
             <button className="btn btn-outline btn-sm" onClick={() => nav('/chefs')}>View all dishes →</button>
           </div>
-          <div className="dish-scroll">
-            {DISHES.map((d, i) => (
-              <div key={d.name} className="dish-card" onClick={() => nav('/chefs')}>
-                <div className="dish-img" style={{ background: BG_COLORS[i], position:'relative', overflow:'hidden', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                  {/* Emoji — fallback, always in center */}
-                  <span style={{ fontSize:'3rem', position:'absolute', zIndex:0 }}>{d.emoji}</span>
-                  {/* Real photo — overlays emoji completely when loaded */}
-                  <img
-                    src={`${IMG}/uploads/dishes/${d.image}`}
-                    alt={d.name}
-                    style={{ width:'100%', height:'100%', objectFit:'cover', position:'absolute', inset:0, zIndex:1 }}
-                    onError={e => { e.target.style.display = 'none'; }}
-                  />
-                  <div className="dish-overlay" style={{ position:'absolute', bottom:0, left:0, right:0, zIndex:2 }}>{d.chefs}</div>
+          {trendingDishes.length > 0 ? (
+            <div className="dish-scroll">
+              {trendingDishes.map((d, i) => (
+                <div key={i} className="dish-card" onClick={() => nav('/chefs')}>
+                  <div className="dish-img" style={{ background: BG_COLORS[i], position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {/* Emoji always underneath as fallback */}
+                    <span style={{ fontSize: '3rem', position: 'absolute', zIndex: 0 }}>🍽️</span>
+                    {/* Real Cloudinary image on top */}
+                    <img
+                      src={d.image}
+                      alt={d.name}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0, zIndex: 1 }}
+                      onError={e => { e.target.style.display = 'none'; }}
+                    />
+                    <div className="dish-overlay" style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 2 }}>
+                      by {d.chefName}
+                    </div>
+                  </div>
+                  <div className="dish-info">
+                    <div className="dish-name">{d.name}</div>
+                    <div className="dish-price">₹{d.price}</div>
+                    <div className="dish-avail">{d.chefName}</div>
+                  </div>
                 </div>
-                <div className="dish-info">
-                  <div className="dish-name">{d.name}</div>
-                  <div className="dish-price">{d.price}</div>
-                  <div className="dish-avail">{d.chefs}</div>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            // Fallback when no dishes have images yet
+            <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--muted)' }}>
+              <div style={{ fontSize: '3rem', marginBottom: 12 }}>🍽️</div>
+              <p>Chefs are adding their dishes — check back soon!</p>
+              <button className="btn btn-primary" style={{ marginTop: 16 }} onClick={() => nav('/chefs')}>
+                Browse Chefs →
+              </button>
+            </div>
+          )}
         </div>
       </section>
 
@@ -191,7 +219,7 @@ export default function Home() {
               return (
                 <div key={ch._id} className="ccard" onClick={() => nav(`/chefs/${ch._id}`)}>
                   <div className="ccard-img" style={{ background: BG_COLORS[i % BG_COLORS.length] }}>
-                    <div className="ccard-av">{u?.name?.split(' ').map(n=>n[0]).join('').slice(0,2)}</div>
+                    <div className="ccard-av">{u?.name?.split(' ').map(n => n[0]).join('').slice(0, 2)}</div>
                     {ch.isVerified && <div className="ccard-verified">✓ Verified</div>}
                     <div className="ccard-tag">Top Rated</div>
                   </div>
@@ -201,7 +229,7 @@ export default function Home() {
                       <Stars r={ch.rating} count={ch.totalReviews} />
                       <span>📍 {ch.location}</span>
                     </div>
-                    <div className="ccard-cuisines">{ch.cuisines?.slice(0,2).map(c => <span key={c} className="ctag">{c}</span>)}</div>
+                    <div className="ccard-cuisines">{ch.cuisines?.slice(0, 2).map(c => <span key={c} className="ctag">{c}</span>)}</div>
                     <div className="ccard-foot">
                       <div><div className="ccard-price">₹{ch.pricing?.hourly}<small>/hr</small></div><div className="ccard-exp">{ch.experience} yrs exp</div></div>
                       <button className="btn btn-primary btn-sm" onClick={e => { e.stopPropagation(); nav(`/chefs/${ch._id}`); }}>Book Now</button>

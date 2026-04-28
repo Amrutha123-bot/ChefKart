@@ -22,7 +22,10 @@ const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').r
  */
 const dishImgUrl = (image) => {
   if (!image) return null;
+  // Cloudinary URL — use directly
   if (image.startsWith('http')) return image;
+  // Local filename
+  const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
   return `${API_BASE}/uploads/dishes/${image}`;
 };
 
