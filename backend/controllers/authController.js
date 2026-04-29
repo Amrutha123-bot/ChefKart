@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const { User, Chef } = require('../models');
+const { User, Chef } = require('../models/index');
 const notify = require('../utils/notify');
 const { sendEmail } = require('../utils/email');
 
@@ -20,9 +20,9 @@ exports.register = async (req, res) => {
     if (await User.findOne({ email }))
       return res.status(400).json({ success: false, message: 'Email already registered' });
 
-    const isChefApply  = role === 'chef';
-    const actualRole   = isChefApply ? 'user' : (role || 'user');
-    const appStatus    = isChefApply ? 'pending' : 'none';
+    const isChefApply = role === 'chef';
+    const actualRole = isChefApply ? 'user' : (role || 'user');
+    const appStatus = isChefApply ? 'pending' : 'none';
 
     const user = await User.create({
       name, email, password, phone,
@@ -31,23 +31,22 @@ exports.register = async (req, res) => {
       chefApplicationData: isChefApply ? (chefApplication || {}) : null
     });
 
-    try {
-      await sendEmail(email, 'welcome', name, isChefApply ? 'chef applicant' : actualRole, email, password);
-    } catch (e) {
-      console.log("Email failed but continuing...");
+    if (process.env.EMAIL_USER) {
+      sendEmail(email, 'welcome', name, isChefApply ? 'chef applicant' : actualRole, email, password)
+        .catch(() => console.log("Email failed"));
     }
 
     if (isChefApply) {
       const admins = await User.find({ role: 'admin' });
-      for (const admin of admins) {
-        await notify(
+      admins.forEach(admin => {
+        notify(
           admin._id,
           'chef_application',
           `📝 New Chef Application from ${name}`,
           `${name} (${email}) applied`,
           { applicantId: user._id, applicantEmail: email, ...(chefApplication || {}) }
-        );
-      }
+        ).catch(() => { });
+      });
 
       return res.status(201).json({
         success: true,

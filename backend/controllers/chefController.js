@@ -1,4 +1,4 @@
-const { Chef, User, Review } = require('../models');
+const { Chef, User, Review } = require('../models/index');
 const path = require('path');
 const fs   = require('fs');
 

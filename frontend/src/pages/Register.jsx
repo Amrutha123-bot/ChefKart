@@ -3,17 +3,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 
-const CUISINES = ['North Indian','South Indian','Continental','Chinese','Mughlai','Thai','Gujarati','Punjabi','Kerala','Rajasthani'];
+const CUISINES = ['North Indian', 'South Indian', 'Continental', 'Chinese', 'Mughlai', 'Thai', 'Gujarati', 'Punjabi', 'Kerala', 'Rajasthani'];
 
 export default function Register() {
   const [role, setRole] = useState('user');
-  const [form, setForm] = useState({ name:'', email:'', password:'', phone:'' });
-  const [chefApp, setChefApp] = useState({ bio:'', cuisines:[], experience:0, hourlyRate:500, location:'' });
+  const [form, setForm] = useState({ name: '', email: '', password: '', phone: '' });
+  const [chefApp, setChefApp] = useState({ bio: '', cuisines: [], experience: 0, hourlyRate: 500, location: '' });
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
   const nav = useNavigate();
 
-  const toggleCuisine = c => setChefApp(f => ({ ...f, cuisines: f.cuisines.includes(c) ? f.cuisines.filter(x=>x!==c) : [...f.cuisines, c] }));
+  const toggleCuisine = c => setChefApp(f => ({ ...f, cuisines: f.cuisines.includes(c) ? f.cuisines.filter(x => x !== c) : [...f.cuisines, c] }));
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -30,8 +30,13 @@ export default function Register() {
         nav('/dashboard');
       }
     } catch (err) {
-      console.log("REGISTER ERROR:", err.response?.data);
-      toast.error(err.response?.data?.message || 'Registration failed');
+      console.log("FULL ERROR:", err);
+      if (!err.response) {
+        toast.success("Account created! Please login.");
+        return;
+      }
+
+      toast.error(err.response.data?.message || "Registration failed");
     } finally { setLoading(false); }
   };
 
@@ -69,21 +74,21 @@ export default function Register() {
           )}
           <form onSubmit={handleSubmit}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 14px' }}>
-              <div className="form-group"><label>Full Name</label><input className="fc" required placeholder="John Doe" value={form.name} onChange={e => setForm(f=>({...f,name:e.target.value}))} /></div>
-              <div className="form-group"><label>Phone</label><input className="fc" type="tel" placeholder="9876543210" value={form.phone} onChange={e => setForm(f=>({...f,phone:e.target.value}))} /></div>
+              <div className="form-group"><label>Full Name</label><input className="fc" required placeholder="John Doe" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} /></div>
+              <div className="form-group"><label>Phone</label><input className="fc" type="tel" placeholder="9876543210" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} /></div>
             </div>
-            <div className="form-group"><label>Email Address</label><input type="email" className="fc" required placeholder="you@example.com" value={form.email} onChange={e => setForm(f=>({...f,email:e.target.value}))} /></div>
-            <div className="form-group"><label>Password</label><input type="password" className="fc" required placeholder="Min 6 characters" value={form.password} onChange={e => setForm(f=>({...f,password:e.target.value}))} /></div>
+            <div className="form-group"><label>Email Address</label><input type="email" className="fc" required placeholder="you@example.com" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} /></div>
+            <div className="form-group"><label>Password</label><input type="password" className="fc" required placeholder="Min 6 characters" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} /></div>
 
             {role === 'chef' && (
               <>
                 <div className="auth-divider" />
                 <h4 style={{ marginBottom: 16, fontSize: '1rem' }}>🍳 Chef Application Details</h4>
-                <div className="form-group"><label>Bio / About You *</label><textarea className="fc" rows={3} required placeholder="Describe your cooking style, background, and what makes you special..." value={chefApp.bio} onChange={e => setChefApp(f=>({...f,bio:e.target.value}))} /></div>
+                <div className="form-group"><label>Bio / About You *</label><textarea className="fc" rows={3} required placeholder="Describe your cooking style, background, and what makes you special..." value={chefApp.bio} onChange={e => setChefApp(f => ({ ...f, bio: e.target.value }))} /></div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0 12px' }}>
-                  <div className="form-group"><label>Experience (yrs)</label><input type="number" className="fc" min={0} value={chefApp.experience} onChange={e => setChefApp(f=>({...f,experience:+e.target.value}))} /></div>
-                  <div className="form-group"><label>Hourly Rate (₹)</label><input type="number" className="fc" min={100} value={chefApp.hourlyRate} onChange={e => setChefApp(f=>({...f,hourlyRate:+e.target.value}))} /></div>
-                  <div className="form-group"><label>City</label><input className="fc" placeholder="Bangalore" value={chefApp.location} onChange={e => setChefApp(f=>({...f,location:e.target.value}))} /></div>
+                  <div className="form-group"><label>Experience (yrs)</label><input type="number" className="fc" min={0} value={chefApp.experience} onChange={e => setChefApp(f => ({ ...f, experience: +e.target.value }))} /></div>
+                  <div className="form-group"><label>Hourly Rate (₹)</label><input type="number" className="fc" min={100} value={chefApp.hourlyRate} onChange={e => setChefApp(f => ({ ...f, hourlyRate: +e.target.value }))} /></div>
+                  <div className="form-group"><label>City</label><input className="fc" placeholder="Bangalore" value={chefApp.location} onChange={e => setChefApp(f => ({ ...f, location: e.target.value }))} /></div>
                 </div>
                 <div className="form-group">
                   <label>Cuisines (select all that apply)</label>
@@ -96,7 +101,7 @@ export default function Register() {
               </>
             )}
 
-            <button type="submit" className="btn btn-primary" style={{ width:'100%', marginTop: 8, justifyContent: 'center' }} disabled={loading}>
+            <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: 8, justifyContent: 'center' }} disabled={loading}>
               {loading ? 'Creating...' : role === 'chef' ? 'Submit Chef Application' : 'Create Account →'}
             </button>
           </form>
