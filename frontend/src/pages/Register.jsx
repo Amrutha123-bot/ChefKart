@@ -30,6 +30,7 @@ export default function Register() {
         nav('/dashboard');
       }
     } catch (err) {
+      console.log("REGISTER ERROR:", err.response?.data);
       toast.error(err.response?.data?.message || 'Registration failed');
     } finally { setLoading(false); }
   };
