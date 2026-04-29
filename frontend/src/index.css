@@ -154,6 +154,38 @@ textarea.fc{resize:vertical;min-height:80px}
 .dish-name{font-weight:700;font-size:.86rem;margin-bottom:3px}
 .dish-price{font-size:.78rem;color:var(--muted)}
 .dish-avail{font-size:.72rem;color:var(--green);font-weight:600;margin-top:2px}
+.dish-scroll {
+  display: flex;
+  gap: 16px;
+}
+.dish-card {
+  width: 220px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.dish-info {
+  padding: 10px 12px;
+}
+
+.dish-name {
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.dish-price {
+  color: #2e7d32;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.dish-chef {
+  font-size: 13px;
+  color: #666;
+}
 
 /* ── Chef cards (new style) ── */
 .chef-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}

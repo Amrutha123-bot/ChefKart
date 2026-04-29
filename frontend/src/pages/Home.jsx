@@ -31,7 +31,7 @@ export default function Home() {
   const [trendingDishes, setTrendingDishes] = useState([]);
   const nav = useNavigate();
 
-console.log("Home page")
+  console.log("Home page")
   useEffect(() => {
     // Fetch real dishes from your chefs in the database
     chefAPI.getAll({ limit: 6 }).then(r => {
@@ -42,7 +42,12 @@ console.log("Home page")
       chefs.forEach(chef => {
         (chef.dishes || []).forEach(d => {
           if (d.image && dishes.length < 5) {
-            dishes.push({ ...d, chefName: chef.userId?.name });
+            dishes.push({
+              name: d.name,
+              price: d.price,
+              image: d.image,
+              chefName: chef.userId?.name
+            });
           }
         });
       });
@@ -176,22 +181,25 @@ console.log("Home page")
                 console.log("Dish:", d);
                 console.log("Image:", d.image);
                 return (
-                  <div key={i} className="dish-card">
+                  <div className="dish-card">
                     <div className="dish-img">
                       <img
-                        src={imgUrl}
+                        src={d.image}
                         alt={d.name}
-                        style={{ width: '100%', height: '200px', objectFit: 'cover' }}
-                        onError={(e) => {
-                          e.target.src = "https://via.placeholder.com/300";
+                        style={{
+                          width: '100%',
+                          height: '180px',
+                          objectFit: 'cover',
+                          borderTopLeftRadius: '12px',
+                          borderTopRightRadius: '12px'
                         }}
                       />
                     </div>
 
                     <div className="dish-info">
-                      <div>{d.name}</div>
-                      <div>₹{d.price}</div>
-                      <div>{d.chefName}</div>
+                      <div className="dish-name">{d.name}</div>
+                      <div className="dish-price">₹{d.price}</div>
+                      <div className="dish-chef">{d.chefName}</div>
                     </div>
                   </div>
                 );
