@@ -1,4 +1,4 @@
-const { User, Chef, Booking, Payment, Notification } = require('../models');
+const { User, Chef, Booking, Payment, Notification } = require('../models/index');
 const notify        = require('../utils/notify');
 const { sendEmail } = require('../utils/email');
 
