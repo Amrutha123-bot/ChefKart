@@ -39,6 +39,7 @@ export default function ChefDashboard() {
   const [rejectReason, setRejectReason] = useState('');
   const [profileLoading, setProfileLoading] = useState(false);
   const [pwLoading, setPwLoading] = useState(false);
+  const [loadingId, setLoadingId] = useState(null);
   const [pwForm, setPwForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const fileRef = useRef(null);
 
@@ -87,6 +88,7 @@ export default function ChefDashboard() {
 
   // ── Booking status update ──────────────────────────────────────────────────
   const handleStatus = async (id, status, reason = '') => {
+    setLoadingId(id);
     try {
       await bookingAPI.updateStatus(id, { status, rejectionReason: reason });
       setBookings(bs => bs.map(b => b._id === id ? { ...b, status, rejectionReason: reason } : b));
@@ -105,7 +107,9 @@ export default function ChefDashboard() {
         return;
       }
       toast.error(err.response?.data?.message || 'Action failed');
-    };
+    } finally {
+      setLoadingId(null); // 🔥 stop loading
+    }
   }
   // ── Dish image upload via Multer ───────────────────────────────────────────
   // This sends a multipart/form-data POST to /api/chefs/dish-image
@@ -312,7 +316,7 @@ export default function ChefDashboard() {
                         <div className="bk-acts">
                           {b.status === 'pending' && (
                             <>
-                              <button className="btn btn-primary btn-sm" onClick={() => handleStatus(b._id, 'confirmed')}>✓ Accept</button>
+                              <button className="btn btn-primary btn-sm" onClick={() => handleStatus(b._id, 'confirmed')}>{loadingId === b._id ? 'Processing...' : '✓ Accept'}</button>
                               <button className="btn btn-danger btn-sm" onClick={() => { setRejectModal(b._id); setRejectReason(''); }}>✕ Decline</button>
                             </>
                           )}

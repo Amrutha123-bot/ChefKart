@@ -13,7 +13,7 @@ exports.getDashboardStats = async (req, res) => {
       User.countDocuments({ chefApplicationStatus: 'pending' })
     ]);
     const revenue = await Booking.aggregate([
-      { $match: { paymentStatus: 'paid' } },
+      { $match: { status: 'completed' } },
       { $group: { _id: null, total: { $sum: '$totalAmount' } } }
     ]);
     const recentBookings = await Booking.find()
