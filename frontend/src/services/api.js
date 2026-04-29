@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const API = axios.create({ baseURL: import.meta.env.VITE_API_URL, timeout: 20000 });
+const API = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || "https://chefkart-api-90wb.onrender.com/api",
+  timeout: 20000
+});
 console.log(import.meta.env.VITE_API_URL);
 
 API.interceptors.request.use(cfg => {
