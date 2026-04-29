@@ -1,7 +1,8 @@
 export const getImageUrl = (image) => {
-  if (!image) return "https://via.placeholder.com/300";
+  if (!image) return null;
 
   if (image.startsWith('http')) return image;
 
-  return `https://chefkart-api-90wb.onrender.com/uploads/dishes/${image}`;
+  const base = import.meta.env.VITE_API_URL.replace('/api', '');
+  return `${base}/uploads/dishes/${image}`;
 };
