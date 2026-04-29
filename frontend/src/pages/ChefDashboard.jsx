@@ -103,7 +103,7 @@ export default function ChefDashboard() {
       }
       toast.error(err.response?.data?.message || 'Action failed');
     };
-
+  }
     // ── Dish image upload via Multer ───────────────────────────────────────────
     // This sends a multipart/form-data POST to /api/chefs/dish-image
     // The backend multer middleware saves it to uploads/dishes/
