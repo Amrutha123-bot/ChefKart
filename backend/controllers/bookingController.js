@@ -95,7 +95,7 @@ exports.updateBookingStatus = async (req, res) => {
     if (!booking) return res.status(404).json({ success: false, message: 'Booking not found' });
 
     const chef = await Chef.findOne({ userId: req.user._id });
-    if (req.user.role === 'chef' && (!chef || chef._id.toString() !== booking.chefId._id.toString()))
+    if (req.user.role === 'chef' && (!chef || !chef._id.equals(booking.chefId._id)))
       return res.status(403).json({ success: false, message: 'Not authorized to update this booking' });
 
     booking.status = status;
