@@ -344,6 +344,5 @@ CLIENT_URL=https://your-vercel-app.vercel.app
 - Website explanation video - https://drive.google.com/file/d/1KhUhsMqv4-ZbzdwWLUsdMuIkoZbTqlfB/view?usp=drivesdk
 - Frontend explanation video - https://drive.google.com/file/d/1Kg_mC4k8d-TfKCQgDR6j_E0sZoQv3bIz/view?usp=drivesdk
 - Backend explanation video - https://drive.google.com/file/d/1KQ3TcjYJ4Wra6G3Te0pha9ZS-UmY2SVT/view?usp=drivesdk
+- Deployed website link - https://chef-kart-3.vercel.app/
 ---
-
-*Built with ❤️ using MERN Stack*
