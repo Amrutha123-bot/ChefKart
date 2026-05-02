@@ -340,30 +340,10 @@ CLIENT_URL=https://your-vercel-app.vercel.app
 - [x] Database seeding with sample data
 
 ---
-
-## ❓ Troubleshooting
-
-**MongoDB won't connect:**
-```bash
-# Check if MongoDB is running
-sudo service mongod status
-# Start it
-sudo service mongod start
-```
-
-**Port already in use:**
-```bash
-# Kill process on port 5000
-npx kill-port 5000
-```
-
-**CORS errors:**
-- Make sure `CLIENT_URL` in backend `.env` matches your frontend URL exactly (no trailing slash)
-
-**Login not working:**
-- Run `node seed.js` again to reset demo data
-- Check MongoDB connection in terminal
-
+## 🔗 Reference  Links
+- Website explanation video - https://drive.google.com/file/d/1KhUhsMqv4-ZbzdwWLUsdMuIkoZbTqlfB/view?usp=drivesdk
+- Frontend explanation video - https://drive.google.com/file/d/1Kg_mC4k8d-TfKCQgDR6j_E0sZoQv3bIz/view?usp=drivesdk
+- Backend explanation video - https://drive.google.com/file/d/1KQ3TcjYJ4Wra6G3Te0pha9ZS-UmY2SVT/view?usp=drivesdk
 ---
 
 *Built with ❤️ using MERN Stack*
